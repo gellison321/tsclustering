@@ -1,7 +1,7 @@
 # <p align="center"> tsclustering
 <div align="center">
 <p>
-<img alt="GitHub" src="https://img.shields.io/github/license/gellison321/timeseriespy">
+<img alt="GitHub" src="https://img.shields.io/github/license/gellison321/tsclustering">
 </p>
 </div>
 
@@ -11,12 +11,12 @@
 
 ### Handling Data with Temporal Distortions
 
-By using DTW (sklearn) and interpolated averaging, this package is able to efficiently handle arrays of varied length without interpolation or padding.
+By using DTW and interpolated averaging, this package is able to efficiently handle arrays of varied length without interpolation or padding.
 
 <div align="center">
 <p>
-<img alt="GitHub" src="https://github.com/gellison321/tsclustering/blob/main/data/resources/varied-length.png?raw=true" width = 50%; height = auto>
-<img alt="GitHub" src="https://github.com/gellison321/tsclustering/blob/main/data/resources/clustered-varied-length.png?raw=true" width = 50%; height = auto>
+<img alt="GitHub" src="https://github.com/gellison321/tsclustering/blob/main/data/resources/varied-length.png?raw=true" width = auto; height = auto>
+<img alt="GitHub" src="https://github.com/gellison321/tsclustering/blob/main/data/resources/clustered-varied-length.png?raw=true" width = auto; height = auto>
 </p>
 </div>
 
@@ -29,7 +29,7 @@ To sidestep the time complexity of other barycenter averaging techniques, we use
 
 <div align="center">
 <p>
-<img alt="GitHub" src="https://github.com/gellison321/tsclustering/blob/main/data/resources/barycenter.png?raw=true" width = 50%; height = auto>
+<img alt="GitHub" src="https://github.com/gellison321/tsclustering/blob/main/data/resources/barycenter.png?raw=true" width = auto; height = auto>
 </p>
 </div>
 
@@ -41,7 +41,7 @@ To sidestep the time complexity of other barycenter averaging techniques, we use
 ### **DEPENDENCIES**
 - Numpy
 - SciPy
-- SKLearn
+- TSLearn
 
 ##  <p align="center"> IMPLEMENTATION
 
