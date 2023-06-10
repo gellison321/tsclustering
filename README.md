@@ -15,16 +15,10 @@ By using DTW (sklearn) and interpolated averaging, this package is able to effic
 
 <div align="center">
 <p>
-<img alt="GitHub" src="https://github.com/gellison321/tsclustering/blob/main/data/resources/varied-length.png?raw=true">
+<img alt="GitHub" src="https://github.com/gellison321/tsclustering/blob/main/data/resources/varied-length.png?raw=true" width = 50%; height = auto>
+<img alt="GitHub" src="https://github.com/gellison321/tsclustering/blob/main/data/resources/clustered-varied-length.png?raw=true" width = 50%; height = auto>
 </p>
 </div>
-
-<div align="center">
-<p>
-<img alt="GitHub" src="https://github.com/gellison321/tsclustering/blob/main/data/resources/clustered-varied-length.png?raw=true">
-</p>
-</div>
-
 
 ### Interpolated Averaging
 
@@ -33,6 +27,11 @@ To sidestep the time complexity of other barycenter averaging techniques, we use
 1. Each array is interpolated to a vector of the average length of the group
 2. The average vector is taken as the barycenter
 
+<div align="center">
+<p>
+<img alt="GitHub" src="https://github.com/gellison321/tsclustering/blob/main/data/resources/barycenter.png?raw=true" width = 50%; height = auto>
+</p>
+</div>
 
 ### Distance Metrics
 - Dynamic Time Warping
@@ -71,6 +70,10 @@ km.get_inertia()
 # Soft Clustering
 
 km.soft_cluster()
+
+# Predict Out-of-Sample Data
+
+km.predict([[]])
 
 ```
 
