@@ -11,11 +11,17 @@
 
 ### Handling Data with Temporal Distortions
 
-By using DTW (sklearn) and interpolated averaging, this package is able to efficiently handle arrays of varied length with interpolation or padding.
+By using DTW (sklearn) and interpolated averaging, this package is able to efficiently handle arrays of varied length without interpolation or padding.
 
 <div align="center">
 <p>
 <img alt="GitHub" src="https://github.com/gellison321/tsclustering/blob/main/data/resources/varied-length.png?raw=true">
+</p>
+</div>
+
+<div align="center">
+<p>
+<img alt="GitHub" src="https://github.com/gellison321/tsclustering/blob/main/data/resources/clustered-tvaried-length.png?raw=true">
 </p>
 </div>
 
