@@ -21,7 +21,7 @@ By using DTW (sklearn) and interpolated averaging, this package is able to effic
 
 <div align="center">
 <p>
-<img alt="GitHub" src="https://github.com/gellison321/tsclustering/blob/main/data/resources/clustered-tvaried-length.png?raw=true">
+<img alt="GitHub" src="https://github.com/gellison321/tsclustering/blob/main/data/resources/clustered-varied-length.png?raw=true">
 </p>
 </div>
 
