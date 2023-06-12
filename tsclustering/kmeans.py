@@ -88,7 +88,6 @@ class KMeans():
 
     # Computes the distance of each instance of X to each centroid
     def soft_cluster(self):
-
         soft_clusters = []
         for centroid in self.centroids:
             distances = []

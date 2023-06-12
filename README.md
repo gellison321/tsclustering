@@ -29,7 +29,7 @@ To sidestep the time complexity of other barycenter averaging techniques, we use
 
 <div align="center">
 <p>
-<img alt="GitHub" src="https://github.com/gellison321/tsclustering/blob/main/data/resources/barycenter.jpeg?raw=true" width = 75%; height = auto>
+<img alt="GitHub" src="https://github.com/gellison321/tsclustering/blob/main/data/resources/barycenter.jpg?raw=true" width = 75%; height = auto>
 </p>
 </div>
 
