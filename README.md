@@ -7,11 +7,9 @@
 
 ## <p align="center"> A clustering tool for timeseries data with temporal distortions.
 
-### **FEATURES**
+### <p align="center"> Handling Data with Temporal Distortions
 
-### Handling Data with Temporal Distortions
-
-By using DTW and interpolated averaging, this package is able to efficiently handle arrays of varied length without interpolation or padding.
+By using DTW and interpolated averaging, this package is able to efficiently handle arrays of varied length.
 
 <div align="center">
 <p>
@@ -20,12 +18,14 @@ By using DTW and interpolated averaging, this package is able to efficiently han
 </p>
 </div>
 
-### Interpolated Averaging
+### <p align="center"> Interpolated Averaging
 
-To sidestep the time complexity of other barycenter averaging techniques, we use interpolated averaging to efficiently compute the barycenters of varied-lengthed arrays. 
+To avoid the time complexity of other barycenter averaging techniques, we use interpolated averaging to efficiently compute the barycenters of varied-lengthed arrays. The process is as follows:
 
-1. Each array is interpolated to a vector of the average length of the group
-2. The average vector is taken as the barycenter
+
+1. The mean length of the group, $\mu$, is found.
+2. Each timeseries is interpolated to create a vector, $\vec{ts_{l}}$, where $||\vec{ts_{l}}|| = \mu$.
+3. The average vector is found as the barycenter - $barycenter = \frac{1}{L}  \sum_{l=1}^{L}\vec{ts_{l}}$, where L is the number of timeseries being averaged and $\vec{ts_{l}} \in{\mathbb{R}^{n}}$.
 
 <div align="center">
 <p>
@@ -33,12 +33,12 @@ To sidestep the time complexity of other barycenter averaging techniques, we use
 </p>
 </div>
 
-### Distance Metrics
+#### Distance Metrics
 - Dynamic Time Warping
 - Cross Correlation
 - Euclidean Distance
 
-### **DEPENDENCIES**
+#### Dependencies
 - Numpy
 - SciPy
 - TSLearn
@@ -50,7 +50,6 @@ import pickle
 from tsclustering.kmeans import KMeans
 
 # Loading Example Data 
-
 with open('./data/sample_data/X.pickle','rb') as file:
     X = pickle.load(file)
 with open('./data/sample_data/y.pickle','rb') as file:
@@ -58,21 +57,17 @@ with open('./data/sample_data/y.pickle','rb') as file:
 
 
 # Clustering with KMeans 
-
 km = KMeans(k_clusters = 3, n_init = 10, max_iter = 100,
             centroids = [], metric = 'dtw', averaging = 'interpolated')
 km.fit(X)
 
 # Computing Inertia
-
 km.get_inertia()
 
 # Soft Clustering
-
 km.soft_cluster()
 
 # Predict Out-of-Sample Data
-
 km.predict([[]])
 
 ```
