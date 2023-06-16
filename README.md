@@ -9,7 +9,7 @@
 
 ### <p align="center"> Handling Data with Temporal Distortions
 
-By using DTW and interpolated averaging, this package is able to efficiently handle arrays of varied length.
+KMean implemenation using DTW and interpolated averaging. This package is able to efficiently handle arrays of varied length.
 
 <div align="center">
 <p>
@@ -25,7 +25,7 @@ To avoid the time complexity of other barycenter averaging techniques, we use in
 
 1. The mean length of the group, $\mu$, is found.
 2. Each timeseries is interpolated to create a vector, $\vec{ts_{l}}$, where $||\vec{ts_{l}}|| = \mu$.
-3. The average vector is found as the barycenter - $barycenter = \frac{1}{L}  \sum_{l=1}^{L}\vec{ts_{l}}$, where L is the number of timeseries being averaged and $\vec{ts_{l}} \in{\mathbb{R}^{n}}$.
+3. The average vector is found as the barycenter $$barycenter = \frac{1}{L}  \sum_{l=1}^{L}\vec{ts_{l}}$$where L is the number of timeseries being averaged and $\vec{ts_{l}} \in{\mathbb{R}^{n}}$.
 
 <div align="center">
 <p>
@@ -44,6 +44,7 @@ To avoid the time complexity of other barycenter averaging techniques, we use in
 - TSLearn
 
 ##  <p align="center"> IMPLEMENTATION
+### <p align="center"> [Full Implementation](https://github.com/gellison321/tsclustering/blob/main/implementation.ipynb)
 
 ```python
 import pickle
@@ -72,4 +73,4 @@ km.predict([[]])
 
 ```
 
-### [Full Implementation](https://github.com/gellison321/tsclustering/blob/main/implementation.ipynb)
+
