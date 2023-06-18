@@ -7,6 +7,11 @@
 
 ## <p align="center"> A clustering tool for timeseries data with temporal distortions.
 
+### <p align="center">[Install From pip](https://pypi.org/project/tsclustering/)
+```
+$ pip install tsclustering
+```
+
 ### <p align="center"> Handling Data with Temporal Distortions
 
 KMean implemenation using DTW and interpolated averaging. This package is able to efficiently handle arrays of varied length.
