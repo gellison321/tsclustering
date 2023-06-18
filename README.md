@@ -48,7 +48,7 @@ To avoid the time complexity of other barycenter averaging techniques, we use in
 
 ```python
 import pickle
-from tsclustering.kmeans import KMeans
+from tsclustering import KMeans
 
 # Loading Example Data 
 with open('./data/sample_data/X.pickle','rb') as file:
