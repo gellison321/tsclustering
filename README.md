@@ -14,7 +14,7 @@ $ pip install tsclustering
 
 ### <p align="center"> Handling Data with Temporal Distortions
 
-KMean implemenation using DTW and interpolated averaging. This package is able to efficiently handle arrays of varied length.
+KMeans implemenation using DTW and interpolated averaging. This package is able to efficiently handle arrays of varied length.
 
 <div align="center">
 <p>
