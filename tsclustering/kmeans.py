@@ -64,15 +64,20 @@ class KMeans():
 
     # solves the local cluster problem n_init times and saves the result with the lowest inertia
     def sample_kmeans(self):
-        costs = {}
+        cost = None
+        clusters = None
+        centroids = None
         for n in range(self.n_init):
             self.centroids = []
             self.clusters = []
             self.local_kmeans()
-            costs[self.inertia] = self.clusters, self.centroids
-        self.inertia = min(costs)
-        self.clusters = costs[self.inertia][0]
-        self.centroids = costs[self.inertia][1]
+            if cost is None or self.inertia < cost:
+                cost = self.inertia
+                clusters = self.clusters
+                centroids = self.centroids
+        self.inertia = cost
+        self.clusters = clusters
+        self.centroids = centroids
 
     # Fits centroids and assigns clusters n_init times according to Lloy'ds algorithm
     def fit(self, X):
