@@ -84,6 +84,7 @@ class KMeans():
                 self.centroids = new_centroids
         self.inertia = self._get_inertia()
 
+<<<<<<< HEAD
     def sample_kmeans(self) -> None:
         '''
         Solves the global cluster problem by sampling the local cluster problem n_init times.
@@ -91,6 +92,10 @@ class KMeans():
         Parameters:
             X: array-like, shape = (n_instances, length)
         '''
+=======
+    # solves the local cluster problem n_init times and saves the result with the lowest inertia
+    def sample_kmeans(self):
+>>>>>>> 99d795d4c92802b8b8566943caef8c97d40743e9
         cost = None
         clusters = None
         centroids = None
