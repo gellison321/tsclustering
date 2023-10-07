@@ -21,8 +21,8 @@ KMeans implemenation using DTW and interpolated averaging. This package is able 
 To avoid the time complexity of other barycenter averaging techniques, we use interpolated averaging to efficiently compute the barycenters of varied-lengthed arrays. The process is as follows:
 
 1. The mean length of the group, $\mu$, is found.
-2. Each timeseries is interpolated to create a vector, $\vec{ts_{l}}$, where $||\vec{ts_{l}}|| = \mu$.
-3. The average vector is found as the barycenter $$barycenter = \frac{1}{L}  \sum_{l=1}^{L}\vec{ts_{l}}$$where L is the number of timeseries being averaged and $\vec{ts_{l}} \in{\mathbb{R}^{\mu}}$.
+2. Each timeseries is interpolated to create a vector, $\vec{ts_{l}}$.
+3. The average vector is found as the barycenter $barycenter = \frac{1}{L}  \sum_{l=1}^{L}\vec{ts_{l}}$ where L is the number of timeseries being averaged and $\vec{ts_{l}} \in{\mathbb{R}^{\mu}}$.
 
 <div align="center">
 <p>
@@ -64,7 +64,7 @@ km = KMeans(k_clusters = 3, n_init = 10, max_iter = 100,
             centroids = [], metric = 'dtw', averaging = 'interpolated')
 km.fit(X)
 
-# Access the clusters and centroids attributes to plot the data
+# Access the clusters attribute to plot the data
 colors = ['red', 'green', 'blue']
 for k in range(km.k_clusters):
     cluster = np.array(X, dtype = object)[np.where(np.array(km.clusters) == k)[0]]
@@ -81,11 +81,11 @@ km.get_inertia()
 
 ```python
 from sklearn.metrics import rand_score, adjusted_rand_score
-print('Rand Index:', round(rand_score(km.clusters, y),2))
-print('Adjusted RI:', round(adjusted_rand_score(km.clusters, y),2))
+print('Rand Index:', f'{rand_score(km.clusters, y):.2f}')
+print('Rand Index:', f'{adjusted_rand_score(km.clusters, y):.2f}')
 ```
-Rand Index: 1.0  
-Adjusted RI: 1.0
+Rand Index: 1.00  
+Adjusted RI: 1.00
 
 ```python
 # Soft clustering returns the distance from each instance to each centroid
@@ -110,3 +110,7 @@ print('Predicted Labels:', km.predict([X[0], X[80]]))
 ```
 Clustered Labels: [2, 0]  
 Predicted Labels: [2, 0]
+
+## <p align="center">Future Development
+    1. Implement a more efficent time series comparator
+    2. Multivariate time series clustering
