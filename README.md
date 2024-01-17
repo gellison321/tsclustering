@@ -12,15 +12,14 @@
 $ pip install tsclustering
 ```
 
-## <p align="center"> Handling Data with Temporal Distortions
-
-    KMeans implemenation using DTW and interpolated averaging. This package is able to efficiently handle arrays of varied length.
+## Handling Data with Temporal Distortions
+KMeans implemenation using DTW and interpolated averaging. This package is able to efficiently handle arrays of varied length.
 
 ## Efficient Dynamic Time Warping Implementation with Early abandon
-    Early abandon condition avoid unnecessary computation when searching for best centroid fit.
+Early abandon condition avoid unnecessary computation when searching for best centroid fit.
 
 ## Task-level Hardware Parallelism
-    Uses Python's multiprocessing module
+Uses Python's multiprocessing module
 
 ### <p align="center"> Interpolated Averaging
 
@@ -100,8 +99,7 @@ kmeans = KMeans(k_clusters=3,
         predefined centroids to begin search from
 
 ```python
-# Hardware parallelism
-kmeans = KMeans()
+# Fitting to data
 kmeans.fit(X, cores = 1)
 ```
 
@@ -112,9 +110,8 @@ kmeans.fit(X, cores = 1)
 
     cores: 'auto', int
 
-        Number of cores to use in parallel search. Defaults to 1 core. Set to 'auto' to utilize all cores available, except for 1.
+        Number of cores to use in parallel search. Defaults to 1 core.
         
-    
 
 ``` python
 import matplotlib.pyplot as plt
@@ -141,10 +138,6 @@ print('Rand Index:', f'{adjusted_rand_score(kmeans.clusters, y):.2f}')
 ```
 Rand Index: 1.00  
 Adjusted RI: 1.00
-
-
-
-
 
 ```python
 # Soft clustering returns the distance from each instance to each centroid
