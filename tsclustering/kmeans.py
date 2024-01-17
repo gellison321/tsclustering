@@ -8,9 +8,8 @@ class KMeans():
                   n_init = 5, 
                   k_clusters = 3, 
                   max_iter = 100, 
-                  centroids = [], 
-                  metric = 'dtw', 
-                  window = 'auto'
+                  centroids = [],
+                  window = 0.9
                   ):
         self.k_clusters = k_clusters
         self.n_init = n_init
@@ -18,10 +17,16 @@ class KMeans():
         self.centroids = centroids
         self.metric = dtw
         self.method = 'interpolated_barycenter'
+
         if type(window) in [float, np.float64, np.float32, np.float16, int, np.int64, np.int32, np.int16, np.int8]:
             if window < 0.3:
                 print('Warning: too small of a window parameter may lead to insufficient alignment of arrays, and thus to inaccurate results.')
-        self.window = window
+            self.window = window
+        elif type(window) == int:
+            if window > 1:
+                self.window = 1
+        else:
+            raise TypeError('window must be a float or an int')
         
     def _assign_clusters(self, X, centroids):
         '''
