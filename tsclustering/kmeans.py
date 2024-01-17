@@ -1,28 +1,53 @@
-from tsclustering.functions import metrics, np, barycenters
-from typing import Optional
+from tsclustering.utils import np, utils
+from tsclustering.dtw import dtw
+import multiprocessing
 
 class KMeans():
     
-    def __init__ (self, n_init = 5, k_clusters = 3, max_iter = 100, centroids = [], metric = 'dtw', averaging = 'interpolated'):
+    def __init__ (self, 
+                  n_init = 5, 
+                  k_clusters = 3, 
+                  max_iter = 100, 
+                  centroids = [], 
+                  metric = 'dtw', 
+                  window = 'auto'
+                  ):
         self.k_clusters = k_clusters
         self.n_init = n_init
         self.max_iter = max_iter
         self.centroids = centroids
-        self.metric = metric
-        self.method = averaging
+        self.metric = dtw
+        self.method = 'interpolated_barycenter'
+        if type(window) in [float, np.float64, np.float32, np.float16, int, np.int64, np.int32, np.int16, np.int8]:
+            if window < 0.3:
+                print('Warning: too small of a window parameter may lead to insufficient alignment of arrays, and thus to inaccurate results.')
+        self.window = window
         
-    def _assign_clusters(self, X: np.array) -> list[int]:
+    def _assign_clusters(self, X, centroids):
         '''
-        Assigns each instance of X to the nearest centroid.
+        Assigns each instance of X to the nearest centroid. Enumerates inertia, 
+        upon assignment of cluster, to avoid recomputing it.
 
         Parameters:
             X: array-like, shape = (n_instances, length)
         Returns:
             clusters: array-like, shape = (n_instances, 1)
         '''
-        return [np.argmin(np.array([metrics[self.metric](x, centroid)**2 for centroid in self.centroids])) for x in X]
+        clusters = []
+        inertia = 0
+        for x in X:
+            best_dist = np.inf
+            best_cluster = None
+            for k in range(len(centroids)):
+                dist = self.metric(x, centroids[k], w = self.window, r = best_dist)
+                if dist < best_dist:
+                    best_dist = dist
+                    best_cluster = k
+            clusters.append(best_cluster)
+            inertia += best_dist
+        return np.array(clusters), inertia
     
-    def _initialize_centroids(self, k_centroids: int) -> np.array:
+    def _initialize_centroids(self, k_centroids):
         '''
         Initializes k centroids by randomly selecting k instances of X.
         
@@ -31,10 +56,10 @@ class KMeans():
         Returns:
             centroids: array-like, shape = (k_centroids, length)
         '''
-        centroids = [self.X[np.random.randint(0, self.X.shape[0])] for k in range(k_centroids)]
+        centroids = [self.X[np.random.randint(0, self.X.shape[0])] for _ in range(k_centroids)]
         return np.array(centroids, dtype = self.dtype)
 
-    def _update_centroids(self, X: np.array) -> np.array:
+    def _update_centroids(self, X, centroids, clusters):
         '''
         Updates the centroids by computing the barycenter of each cluster.
         
@@ -44,17 +69,17 @@ class KMeans():
             new_centroids: array-like, shape = (k_centroids, length)
         '''
         new_centroids = []
-        for k in range(len(self.centroids)):  
-            cluster = X[np.where(self.clusters==k)[0]]
+        for k in range(len(centroids)):  
+            cluster = X[np.where(clusters==k)[0]]
             if cluster.shape[0] == 0:
-                new_centroids.append(self.centroids[k])
+                new_centroids.append(centroids[k])
             elif cluster.shape[0] == 1:
                 new_centroids.append(cluster[0])
             else:
-                new_centroids.append(barycenters[self.method](cluster))
+                new_centroids.append(utils[self.method](cluster))
         return np.array(new_centroids, dtype = self.dtype)
 
-    def _check_solution(self, new_centroids: np.array) -> bool:
+    def _check_solution(self, new_centroids, old_centroids):
         '''
         Checks if the solution has converged by checking whether the new centroids 
         are equal to the old centroids.
@@ -64,49 +89,74 @@ class KMeans():
         Returns:
             bool
         '''
-        return np.all([np.array_equal(self.centroids[i], new_centroids[i]) for i in range(len(self.centroids))])
-    
-    def _get_inertia(self):
-        return sum([metrics[self.metric](self.X[i], self.centroids[self.clusters[i]])**2 for i in range(len(self.X))])
+        return all([np.array_equal(old_centroids[i], new_centroids[i]) for i in range(len(old_centroids))])
 
-    def local_kmeans(self) -> None:
+    def local_kmeans(self, i = None):
         '''
         Solves the local cluster problem according to Lloyd's algorithm.
         '''
-        if len(self.centroids) < self.k_clusters:
-            self.centroids = self._initialize_centroids(self.k_clusters)
-        for i in range(self.max_iter):
-            self.clusters = self._assign_clusters(self.X)
-            new_centroids = self._update_centroids(self.X)
-            if self._check_solution(new_centroids):
+        clusters = []
+        centroids = self._initialize_centroids(self.k_clusters)
+        for _ in range(self.max_iter):
+            clusters, inertia = self._assign_clusters(self.X, centroids)
+            new_centroids = self._update_centroids(self.X, centroids, clusters)
+            if self._check_solution(new_centroids, centroids):
                 break
             else:
-                self.centroids = new_centroids
-        self.inertia = self._get_inertia()
+                centroids = new_centroids
 
-    def sample_kmeans(self) -> None:
+        return clusters, centroids, inertia
+
+    def sample_kmeans(self):
         '''
         Solves the global cluster problem by sampling the local cluster problem n_init times.
         
         Parameters:
             X: array-like, shape = (n_instances, length)
         '''
-        cost = None
-        clusters = None
-        centroids = None
-        for n in range(self.n_init):
-            self.centroids = []
-            self.clusters = []
-            self.local_kmeans()
-            if cost is None or self.inertia < cost:
-                cost = self.inertia
-                clusters = self.clusters
-                centroids = self.centroids
-        self.inertia = cost
-        self.clusters = clusters
-        self.centroids = centroids
+        best_cost = None
+        best_clusters = None
+        best_centroids = None
 
-    def fit(self, X) -> None:
+        for _ in range(self.n_init):
+            clusters, centroids, inertia = self.local_kmeans()
+            if best_cost is None or inertia < best_cost:
+                best_cost = inertia
+                best_clusters = clusters
+                best_centroids = centroids
+
+        self.inertia = best_cost
+        self.clusters = best_clusters
+        self.centroids = best_centroids
+
+    def sample_kmeans_parallel(self, cores = 'auto'):
+
+        num_cpus = multiprocessing.cpu_count()
+
+        if cores == 'auto':
+            pool_size = max(1, num_cpus - 1)
+        else:
+            if cores <= num_cpus:
+                pool_size = cores
+
+        with multiprocessing.Pool(pool_size) as pool:
+            results = pool.map(self.local_kmeans, range(self.n_init))
+
+        best_cost = None
+        best_clusters = None
+        best_centroids = None
+
+        for clusters, centroids, inertia in results:
+            if best_cost is None or inertia < best_cost:
+                best_cost = inertia
+                best_clusters = clusters
+                best_centroids = centroids
+
+        self.inertia = best_cost
+        self.clusters = best_clusters
+        self.centroids = best_centroids
+
+    def fit(self, X, cores = 1):
         '''
         Checks the type of data for varied length arrays, and calls the sample_kmeans method.
         
@@ -117,10 +167,16 @@ class KMeans():
         '''
         self.dtype = object if np.any(np.diff(list(map(len, X)))!=0) else 'float64'
         self.X = np.array(X, dtype = self.dtype)
-        self.sample_kmeans()
+        if self.dtype == 'float64':
+            self.method = 'average_barycenter'
 
-    # Assigns an out of sample X to each of the nearest centroids
-    def predict(self, X: np.array) -> list:
+        if cores != 1:
+            assert type(cores) == int, 'cores must be an integer'
+            self.sample_kmeans_parallel(cores = cores)
+        else:
+            self.sample_kmeans()
+
+    def predict(self, X):
         '''
         Assigns each instance of X to the nearest centroid.
         
@@ -129,12 +185,15 @@ class KMeans():
         Returns:
             clusters: array-like, shape = (n_instances, 1)
         '''
-        dtype = object if np.any(np.diff(list(map(len, X)))!=0) else 'float64'
-        X = np.array(X, dtype = dtype)
-        return self._assign_clusters(X)
+        self.dtype = object if np.any(np.diff(list(map(len, X)))!=0) else 'float64'
+        self.X = np.array(X, dtype = self.dtype)
+        if self.dtype == 'float64':
+            self.method = 'average_barycenter'
 
-    # Computes the distance of each instance of X to each centroid
-    def soft_cluster(self) -> np.array:
+        clusters, inertia = self._assign_clusters(X)
+        return clusters
+
+    def soft_cluster(self):
         '''
         Computes the distance of each instance of X to each centroid.
 
@@ -147,7 +206,7 @@ class KMeans():
         for centroid in self.centroids:
             distances = []
             for i in range(len(self.X)):
-                distances.append(metrics[self.metric](self.X[i], centroid))
+                distances.append(self.metric(self.X[i], centroid))
             soft_clusters.append(distances)
         a = np.array(soft_clusters)
         a = a.reshape(a.shape[1], a.shape[0]);

@@ -10,7 +10,7 @@ setup(
   author = 'Grant Ellison',
   author_email = 'gellison321@gmail.com',
   url = 'https://github.com/gellison321/tsclustering',
-  download_url = 'https://github.com/gellison321/tsclustering/archive/refs/tags/1.0.5.tar.gz',
+  download_url = 'https://github.com/gellison321/tsclustering/archive/refs/tags/1.0.6.tar.gz',
   keywords = ['timeseries', 'barycenter', 'clustering', 'data science','data analysis', 'kmeans', 'time series clustering'],
   classifiers=[
     'Development Status :: 4 - Beta',
