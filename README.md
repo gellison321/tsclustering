@@ -14,17 +14,17 @@ $ pip install tsclustering
 
 ## <p align="center"> Handling Data with Temporal Distortions
 
-    KMeans implemenation using DTW and interpolated averaging. This package is able to efficiently handle arrays of varied length.
+KMeans implementation using DTW and interpolated averaging. This package is able to efficiently handle arrays of varied length.
 
-## Efficient Dynamic Time Warping Implementation with Early abandon
-    Early abandon condition avoid unnecessary computation when searching for best centroid fit.
+## Efficient Dynamic Time Warping Implementation with Early Abandon
+Early abandon condition avoids unnecessary computation when searching for best centroid fit.
 
 ## Task-level Hardware Parallelism
-    Uses Python's multiprocessing module
+Uses Python's multiprocessing module
 
 ### <p align="center"> Interpolated Averaging
 
-To avoid the time complexity of other barycenter averaging techniques, we use interpolated averaging to efficiently compute the barycenters of varied-lengthed arrays. The process is as follows:
+To avoid the time complexity of other barycenter averaging techniques, we use interpolated averaging to efficiently compute the barycenters of varied-length arrays. The process is as follows:
 
 1. The mean length of the group, $\mu$, is found.
 2. Each timeseries is interpolated to create a vector, $\vec{ts_{l}}$ where L is the number of timeseries being averaged and $\vec{ts_{l}} \in{\mathbb{R}^{\mu}}$.
@@ -37,7 +37,6 @@ To avoid the time complexity of other barycenter averaging techniques, we use in
 <img alt="GitHub" src="https://github.com/gellison321/tsclustering/blob/main/data/resources/barycenter.jpg?raw=true" width = 75%; height = auto>
 </p>
 </div>
-
 
 
 ### Dependencies
@@ -79,25 +78,20 @@ kmeans = KMeans(k_clusters=3,
 ```
 
 ### KMeans
-    k_clusters: int
+k_clusters: int\
+&nbsp;&nbsp;&nbsp;&nbsp;User-defined number of clusters to search for.
 
-        User-defined number of clusters to search for.
+max_iter: int\
+&nbsp;&nbsp;&nbsp;&nbsp; The max number of iterations to allow local search if convergent solution is not found.
 
-    max_iter: int
+n_init: int\
+&nbsp;&nbsp;&nbsp;&nbsp;Number of local searches to perform. Returns the solution with the minimum inertia
 
-        The max number of iterations to allow local search if convergent solution is not found.
+window: float[0,1]\
+&nbsp;&nbsp;&nbsp;&nbsp;Constrains the warping window of DTW. Window is $w\cdot m$ where $m$ is the length of the longer of two timeseries.
 
-    n_init: int
-
-        Number of local searches to perform. Returns the solution with the minimum inertia
-
-    window: float[0,1]
-
-        Window constraint for the DTW path
-
-    centroids: list[np.array[np.float64]]
-
-        predefined centroids to begin search from
+centroids: list[np.array[np.float64]]\
+&nbsp;&nbsp;&nbsp;&nbsp;predefined centroids to begin search from
 
 ```python
 # Hardware parallelism
@@ -105,14 +99,12 @@ kmeans = KMeans()
 kmeans.fit(X, cores = 1)
 ```
 
-### kmeans.fit
-    X: np.array[np.array]
+### KMeans().fit
+X: np.array[np.array]\
+&nbsp;&nbsp;&nbsp;&nbsp;Array of time-series
 
-        Array of time-series
-
-    cores: 'auto', int
-
-        Number of cores to use in parallel search. Defaults to 1 core. Set to 'auto' to utilize all cores available, except for 1.
+cores: 'auto', int\
+&nbsp;&nbsp;&nbsp;&nbsp;Number of cores to use in parallel search. Defaults to 1 core. Set to 'auto' to utilize all cores available, except for 1.
         
     
 

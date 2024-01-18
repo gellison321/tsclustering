@@ -12,7 +12,7 @@ def dtw_matrix(I, J, w = 0.9, r = np.inf):
     Parameters:
         I: array-like, shape = (I_length, )
         J: array-like, shape = (J_length, )
-        w: float or 'auto'
+        w: float
             Window parameter used to limit the search space of the algorithm.
             The window is set to int(max([I_length, J_length])*w). 
         r: float
