@@ -21,6 +21,7 @@ Early abandon condition avoids unnecessary computation when searching for best c
 
 ## Task-level Hardware Parallelism
 Uses Python's multiprocessing module
+Uses Python's multiprocessing module
 
 ### <p align="center"> Interpolated Averaging
 
@@ -94,8 +95,7 @@ centroids: list[np.array[np.float64]]\
 &nbsp;&nbsp;&nbsp;&nbsp;predefined centroids to begin search from
 
 ```python
-# Hardware parallelism
-kmeans = KMeans()
+# Fitting to data
 kmeans.fit(X, cores = 1)
 ```
 
@@ -133,10 +133,6 @@ print('Rand Index:', f'{adjusted_rand_score(kmeans.clusters, y):.2f}')
 ```
 Rand Index: 1.00  
 Adjusted RI: 1.00
-
-
-
-
 
 ```python
 # Soft clustering returns the distance from each instance to each centroid
