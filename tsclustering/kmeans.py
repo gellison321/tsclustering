@@ -23,7 +23,7 @@ class KMeans():
                 print('Warning: too small of a window parameter may lead to insufficient alignment of arrays, and thus to inaccurate results.')
             self.window = window
         elif type(window) == int:
-            if window > 1:
+            if window != 1:
                 self.window = 1
         else:
             raise TypeError('window must be a float or an int')
