@@ -1,0 +1,19 @@
+Metadata-Version: 2.1
+Name: tsclustering
+Version: 1.1.3
+Summary: A clustering tool for timeseries data with temporal distortions.
+Home-page: https://github.com/gellison321/tsclustering
+Download-URL: https://github.com/gellison321/tsclustering/releases/tag/1.1.3
+Author: Grant Ellison
+Author-email: gellison321@gmail.com
+Keywords: timeseries,barycenter,clustering,data science,data analysis,kmeans,time series clustering
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: Operating System :: OS Independent
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+License-File: LICENSE

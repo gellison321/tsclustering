@@ -4,13 +4,10 @@ import multiprocessing
 
 class KMeans():
     
-    def __init__ (self, 
-                  n_init = 5, 
-                  k_clusters = 3, 
-                  max_iter = 100, 
-                  centroids = [],
-                  window = 0.9
-                  ):
+    def __init__ (self, n_init = 5, k_clusters = 3, 
+                  max_iter = 100, centroids = [], window = 0.9
+                 ):
+        
         self.k_clusters = k_clusters
         self.n_init = n_init
         self.max_iter = max_iter
@@ -18,9 +15,11 @@ class KMeans():
         self.metric = dtw
         self.method = 'interpolated_barycenter'
 
-        if type(window) in [float, np.float64, np.float32, np.float16, int, np.int64, np.int32, np.int16, np.int8]:
+        if type(window) in [float, np.float64, np.float32, np.float16, 
+                            int, np.int64, np.int32, np.int16, np.int8]:
             if window < 0.3:
-                print('Warning: too small of a window parameter may lead to insufficient alignment of arrays, and thus to inaccurate results.')
+                print('Warning: too small of a window parameter may lead to insufficient\
+                       alignment of arrays, and thus to inaccurate results.')
             self.window = window
         elif type(window) == int:
             if window != 1:
@@ -50,7 +49,7 @@ class KMeans():
                     best_cluster = k
             clusters.append(best_cluster)
             inertia += best_dist
-        return np.array(clusters), inertia
+        return (np.array(clusters), inertia)
     
     def _initialize_centroids(self, k_centroids):
         '''
@@ -96,7 +95,7 @@ class KMeans():
         '''
         return all([np.array_equal(old_centroids[i], new_centroids[i]) for i in range(len(old_centroids))])
 
-    def local_kmeans(self, i = None):
+    def local_kmeans(self):
         '''
         Solves the local cluster problem according to Lloyd's algorithm.
         '''
@@ -110,7 +109,7 @@ class KMeans():
             else:
                 centroids = new_centroids
 
-        return clusters, centroids, inertia
+        return (clusters, centroids, inertia)
 
     def sample_kmeans(self):
         '''
@@ -137,6 +136,7 @@ class KMeans():
     def sample_kmeans_parallel(self, cores = 'auto'):
 
         num_cpus = multiprocessing.cpu_count()
+        pool_size = 1
 
         if cores == 'auto':
             pool_size = max(1, num_cpus - 1)
@@ -172,11 +172,11 @@ class KMeans():
         '''
         self.dtype = object if np.any(np.diff(list(map(len, X)))!=0) else 'float64'
         self.X = np.array(X, dtype = self.dtype)
+
         if self.dtype == 'float64':
             self.method = 'average_barycenter'
 
         if cores != 1:
-            assert type(cores) == int, 'cores must be an integer'
             self.sample_kmeans_parallel(cores = cores)
         else:
             self.sample_kmeans()
@@ -192,6 +192,7 @@ class KMeans():
         '''
         self.dtype = object if np.any(np.diff(list(map(len, X)))!=0) else 'float64'
         self.X = np.array(X, dtype = self.dtype)
+
         if self.dtype == 'float64':
             self.method = 'average_barycenter'
 

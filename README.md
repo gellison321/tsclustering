@@ -21,15 +21,13 @@ Early abandon condition avoids unnecessary computation when searching for best c
 
 ## Task-level Hardware Parallelism
 Uses Python's multiprocessing module
-Uses Python's multiprocessing module
 
 ### <p align="center"> Interpolated Averaging
 
-To avoid the time complexity of other barycenter averaging techniques, we use interpolated averaging to efficiently compute the barycenters of varied-length arrays. The process is as follows:
+To avoid the complexity of other barycenter averaging techniques, we use interpolated averaging to efficiently compute the barycenters of varied-length arrays. The process is as follows:
 
 1. The mean length of the group, $\mu$, is found.
 2. Each timeseries is interpolated to create a vector, $\vec{ts_{l}}$ where L is the number of timeseries being averaged and $\vec{ts_{l}} \in{\mathbb{R}^{\mu}}$.
-
 3. The average vector is found as the barycenter $barycenter = \frac{1}{L}  \sum_{l=1}^{L}\vec{ts_{l}}$ 
 
 
@@ -70,10 +68,10 @@ for x in X:
 
 ```python
 # Instantiation
-kmeans = KMeans(k_clusters=3, 
-                max_iter=100,
+kmeans = KMeans(k_clusters=3,
+                max_iter=100, 
                 n_init = 5, 
-                window = 'auto',
+                window = 0.9,
                 centroids = []
                 )
 ```
@@ -96,15 +94,17 @@ centroids: list[np.array[np.float64]]\
 
 ```python
 # Fitting to data
-kmeans.fit(X, cores = 1)
+kmeans.fit(X, 
+           cores = 1
+           )
 ```
 
 ### KMeans().fit
 X: np.array[np.array]\
 &nbsp;&nbsp;&nbsp;&nbsp;Array of time-series
 
-cores: 'auto', int\
-&nbsp;&nbsp;&nbsp;&nbsp;Number of cores to use in parallel search. Defaults to 1 core. Set to 'auto' to utilize all cores available, except for 1.
+cores: int\
+&nbsp;&nbsp;&nbsp;&nbsp;Number of cores to use in parallel search. Defaults to 1 core. 
         
     
 
@@ -113,8 +113,8 @@ import matplotlib.pyplot as plt
 
 # Access the labels using the kmeans.clusters attribute
 colors = ['red', 'green', 'blue']
-for k in range(km.k_clusters):
-    cluster = np.array(X, dtype = object)[np.where(np.array(km.clusters) == k)[0]]
+for k in range(kmeans.k_clusters):
+    cluster = np.array(X, dtype = object)[np.where(np.array(kmeans.clusters) == k)[0]]
     for arr in cluster:
         plt.plot(arr, color = colors[k])
 ```
@@ -151,7 +151,7 @@ array([[3.66707504, 3.43053223, 3.5902464 ],
 
 ```python
 # Match an incoming time series array to nearest centroid
-print('Clustered Labels:', [kmeans.clusters[0], km.clusters[80]])
+print('Clustered Labels:', [kmeans.clusters[0], kmeans.clusters[80]])
 print('Predicted Labels:', kmeans.predict([X[0], X[80]]))
 
 ```
