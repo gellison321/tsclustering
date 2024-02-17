@@ -1,18 +1,23 @@
-from tsclustering.utils import np, utils
-from tsclustering.dtw import dtw
+from .barycenters import np, barycenters
+from .metrics import metrics
 import multiprocessing
 
 class KMeans():
     
-    def __init__ (self, n_init = 5, k_clusters = 3, 
-                  max_iter = 100, centroids = [], window = 0.9
+    def __init__ (self, 
+                  n_init = 5, 
+                  k_clusters = 3, 
+                  max_iter = 100, 
+                  centroids = [], 
+                  window = 0.9,
+                  metric = 'dtw'
                  ):
         
         self.k_clusters = k_clusters
         self.n_init = n_init
         self.max_iter = max_iter
         self.centroids = centroids
-        self.metric = dtw
+        self.metric = metrics[metric]
         self.method = 'interpolated_barycenter'
 
         if type(window) in [float, np.float64, np.float32, np.float16, 
@@ -80,7 +85,7 @@ class KMeans():
             elif cluster.shape[0] == 1:
                 new_centroids.append(cluster[0])
             else:
-                new_centroids.append(utils[self.method](cluster))
+                new_centroids.append(barycenters[self.method](cluster))
         return np.array(new_centroids, dtype = self.dtype)
 
     def _check_solution(self, new_centroids, old_centroids):
@@ -95,7 +100,7 @@ class KMeans():
         '''
         return all([np.array_equal(old_centroids[i], new_centroids[i]) for i in range(len(old_centroids))])
 
-    def local_kmeans(self):
+    def local_kmeans(self, index = None):
         '''
         Solves the local cluster problem according to Lloyd's algorithm.
         '''
@@ -133,16 +138,21 @@ class KMeans():
         self.clusters = best_clusters
         self.centroids = best_centroids
 
-    def sample_kmeans_parallel(self, cores = 'auto'):
-
+    def sample_kmeans_parallel(self, parallel_cores = 1):
+        
         num_cpus = multiprocessing.cpu_count()
-        pool_size = 1
 
-        if cores == 'auto':
-            pool_size = max(1, num_cpus - 1)
+        if parallel_cores > num_cpus:
+            print(f'Warning: the number of cores requested exceeds the number of available cores.\
+                   The number of cores will be set to {num_cpus-1}.')
+            pool_size = num_cpus-1
+
+        elif parallel_cores < 1:
+            print(f'Warning: the number of cores requested is invalid. The number of cores will be set to 1.')
+            pool_size = 1
+        
         else:
-            if cores <= num_cpus:
-                pool_size = cores
+            pool_size = parallel_cores
 
         with multiprocessing.Pool(pool_size) as pool:
             results = pool.map(self.local_kmeans, range(self.n_init))
@@ -161,7 +171,7 @@ class KMeans():
         self.clusters = best_clusters
         self.centroids = best_centroids
 
-    def fit(self, X, cores = 1):
+    def fit(self, X, parallel_cores = 1):
         '''
         Checks the type of data for varied length arrays, and calls the sample_kmeans method.
         
@@ -176,8 +186,8 @@ class KMeans():
         if self.dtype == 'float64':
             self.method = 'average_barycenter'
 
-        if cores != 1:
-            self.sample_kmeans_parallel(cores = cores)
+        if parallel_cores != 1:
+            self.sample_kmeans_parallel(parallel_cores = parallel_cores)
         else:
             self.sample_kmeans()
 
@@ -196,7 +206,7 @@ class KMeans():
         if self.dtype == 'float64':
             self.method = 'average_barycenter'
 
-        clusters, inertia = self._assign_clusters(X)
+        clusters, inertia = self._assign_clusters(X, self.centroids)
         return clusters
 
     def soft_cluster(self):

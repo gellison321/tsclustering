@@ -1,2 +1,2 @@
-from tsclustering.kmeans import KMeans
-from tsclustering.dtw import dtw
+from .kmeans import KMeans
+from .metrics import dtw, dtw_matrix
