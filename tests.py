@@ -126,7 +126,6 @@ def main():
         
     kmeans.fit(X, parallel_cores = 2)
 
-
     print('All tests passed!')
 
 if __name__ == '__main__':
