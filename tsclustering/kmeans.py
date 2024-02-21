@@ -65,8 +65,17 @@ class KMeans():
         Returns:
             centroids: array-like, shape = (k_centroids, length)
         '''
-        centroids = [self.X[np.random.randint(0, self.X.shape[0])] for _ in range(k_centroids)]
-        return np.array(centroids, dtype = self.dtype)
+
+        if len(self.centroids) == k_centroids:
+            return self.centroids
+        elif len(self.centroids) > k_centroids:
+            return self.centroids[:k_centroids]
+        elif len(self.centroids) < k_centroids:
+            centroids = [self.X[np.random.randint(0, self.X.shape[0])] for _ in range(k_centroids-len(self.centroids))]
+            return np.array(self.centroids + centroids, dtype = self.dtype)
+        else:
+            centroids = [self.X[np.random.randint(0, self.X.shape[0])] for _ in range(k_centroids)]
+            return np.array(centroids, dtype = self.dtype)
 
     def _update_centroids(self, X, centroids, clusters):
         '''
